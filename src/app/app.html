@@ -1,0 +1,93 @@
+<div class="min-h-screen bg-purple-700 flex items-center justify-center p-4">
+  
+  <div class="bg-slate-50 rounded-2xl shadow-2xl p-6 w-full max-w-xl">
+    
+    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Lista de Tareas</h1>
+    
+    <div class="grid grid-cols-3 gap-4 mb-6">
+      
+      <div class="bg-blue-100 p-4 rounded-xl text-center">
+        <p class="text-sm text-blue-600 font-semibold uppercase">Totales</p>
+        <p class="text-3xl font-bold text-blue-900">{{ totalTareas() }}</p>
+      </div>
+
+      <div class="bg-green-100 p-4 rounded-xl text-center">
+        <p class="text-sm text-green-600 font-semibold uppercase">Completas</p>
+        <p class="text-3xl font-bold text-green-900">{{ completadas() }}</p>
+      </div>
+
+      <div class="bg-amber-100 p-4 rounded-xl text-center">
+        <p class="text-sm text-amber-600 font-semibold uppercase">Pendientes</p>
+        <p class="text-3xl font-bold text-amber-900">{{ pendientes() }}</p>
+      </div>
+
+    </div>
+
+    <div class="mb-6 bg-gray-200 rounded-full h-4 overflow-hidden">
+      <div class="bg-green-500 h-4 rounded-full transition-all duration-500" 
+           [style.width.%]="progreso()"></div>
+    </div>
+    <p class="text-right text-sm text-gray-600 font-medium mb-6">Progreso: {{ progreso() }}%</p>
+
+    <form (submit)="agregarTarea(); $event.preventDefault()" class="flex gap-2 mb-6 w-full">
+      <input 
+        type="text" 
+        name="textoTarea"
+        [(ngModel)]="nuevaTareaTexto"
+        placeholder="Escribe una nueva tarea..." 
+        class="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white text-gray-700 shadow-inner"
+      />
+      <button 
+        type="submit" 
+        class="bg-purple-600 hover:bg-purple-800 text-white font-bold px-6 py-3 rounded-xl transition duration-200 shadow-md block whitespace-nowrap min-w-[100px] text-center"
+      >
+        Añadir
+      </button>
+    </form>
+
+    <div class="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+      
+      @for (tarea of listaTareas(); track tarea) {
+        <div class="flex items-center justify-between bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow transition duration-150">
+          
+          <div class="flex items-center gap-3 flex-1 min-w-0" (click)="cambiarEstado(tarea)">
+            <div class="w-6 h-6 rounded-md border-2 flex items-center justify-center cursor-pointer transition-colors duration-200"
+                 [class.bg-green-500]="tarea.completada" 
+                 [class.border-green-500]="tarea.completada"
+                 [class.border-gray-300]="!tarea.completada">
+              @if (tarea.completada) {
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                </svg>
+              }
+            </div>
+
+            <div class="flex flex-col min-w-0 cursor-pointer">
+              <span class="text-base font-medium text-gray-700 truncate"
+                    [class.line-through]="tarea.completada"
+                    [class.text-gray-400]="tarea.completada">
+                {{ tarea.texto }}
+              </span>
+              <span class="text-xs text-gray-400 mt-0.5">
+                {{ tarea.fechaHora }}
+              </span>
+            </div>
+          </div>
+
+          <button (click)="eliminarTarea(tarea)" 
+                  class="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition duration-150 ml-2"
+                  title="Eliminar tarea">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-16v4M4 7h16"></path>
+            </svg>
+          </button>
+
+        </div>
+      } @empty {
+        <p class="text-center text-gray-400 py-6 text-sm italic">No hay tareas pendientes. ¡Buen trabajo!</p>
+      }
+
+    </div>
+
+  </div>
+</div>
